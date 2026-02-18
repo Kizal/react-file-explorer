@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DndContext, DragOverlay, MouseSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import Sidebar from './Sidebar';
 import Toolbar from '../toolbar/Toolbar';
 import Breadcrumb from '../breadcrumb/Breadcrumb';
@@ -8,6 +8,24 @@ import FileList from '../files/FileList';
 import GraphView from '../graph/GraphView';
 import FilePreview from '../preview/FilePreview';
 import { useFileExplorer } from '../../context/FileExplorerContext';
+
+// Custom sensor: only activate drag on primary (left) mouse button.
+// This prevents dnd-kit from intercepting right-click events at the
+// document level, which was blocking onContextMenu from firing.
+class LeftClickOnlySensor extends PointerSensor {
+  static activators = [
+    {
+      eventName: 'onPointerDown',
+      handler: ({ nativeEvent: event }) => {
+        // Only activate on primary button (left-click = button 0)
+        if (event.button !== 0) return false;
+        // Don't activate on interactive elements
+        if (event.target?.closest?.('button, input, textarea, select, [contenteditable]')) return false;
+        return true;
+      },
+    },
+  ];
+}
 
 const AppLayout = () => {
   const { state, dispatch, moveItem, refreshData } = useFileExplorer();
@@ -22,7 +40,7 @@ const AppLayout = () => {
   }, [state.selectedFileIds]);
 
   const sensors = useSensors(
-    useSensor(MouseSensor, {
+    useSensor(LeftClickOnlySensor, {
       activationConstraint: {
         distance: 8,
       }

@@ -7,6 +7,7 @@ export const useContextMenu = () => {
 
   const handleContextMenu = useCallback((event, item) => {
     event.preventDefault();
+    event.stopPropagation();
     setAnchorPoint({ x: event.pageX, y: event.pageY });
     setShow(true);
     setSelectedItem(item);

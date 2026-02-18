@@ -1,15 +1,45 @@
+import { useCallback } from 'react';
 import { useFileExplorer } from '../../context/FileExplorerContext';
 import { getFileIcon, formatFileSize } from '../../utils/fileUtils';
-import { useDraggable } from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 
 const FileCard = ({ file, onContextMenu }) => {
     const { state, dispatch, navigateToFolder } = useFileExplorer();
     const isSelected = state.selectedFileIds.includes(file.id);
 
-    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    const { attributes, listeners, setNodeRef: setDraggableRef, isDragging } = useDraggable({
         id: file.id,
         data: file
     });
+
+    const { setNodeRef: setDroppableRef, isOver } = useDroppable({
+        id: file.id,
+        data: file,
+        disabled: file.type !== 'folder'
+    });
+
+    // Merge refs stably to avoid dnd-kit listener trashing
+    const setNodeRef = useCallback((node) => {
+        setDraggableRef(node);
+        setDroppableRef(node);
+    }, [setDraggableRef, setDroppableRef]);
+
+    // Separate listeners to have full control
+    const { onPointerDown: dndPointerDown, ...otherListeners } = listeners || {};
+
+    const handlePointerDown = (e) => {
+        // Only allow drag on left click (button 0)
+        if (e.button === 0 && dndPointerDown) {
+            dndPointerDown(e);
+        }
+    };
+
+    const handleContextMenuEvent = (e) => {
+        // Always prevent default native menu
+        e.preventDefault();
+        e.stopPropagation();
+        onContextMenu(e, file);
+    };
 
     const handleClick = (e) => {
         e.stopPropagation();
@@ -26,31 +56,40 @@ const FileCard = ({ file, onContextMenu }) => {
     return (
         <div
             ref={setNodeRef}
-            {...listeners}
+            {...otherListeners}
             {...attributes}
+            onPointerDown={handlePointerDown}
             onClick={handleClick}
             onDoubleClick={handleDoubleClick}
-            onContextMenu={(e) => onContextMenu(e, file)}
+            onContextMenu={handleContextMenuEvent}
+            onAuxClick={(e) => {
+                // Chrome sometimes fires auxclick for right button (button 2)
+                if (e.button === 2) {
+                    handleContextMenuEvent(e);
+                }
+            }}
             className={`
                 group flex flex-col items-center justify-between rounded-xl cursor-pointer
                 transition-all duration-200 w-[136px] h-[148px] text-center relative select-none
                 ${isDragging ? 'opacity-40 scale-95' : 'opacity-100'}
+                ${isOver ? 'bg-[var(--accent-subtle)] ring-2 ring-[var(--accent)]' : ''}
             `}
             style={{
-                backgroundColor: isSelected ? 'var(--bg-selected)' : 'var(--card-bg)',
-                border: `1.5px solid ${isSelected ? 'var(--accent)' : 'var(--card-border)'}`,
+                backgroundColor: isOver ? 'var(--accent-subtle)' : (isSelected ? 'var(--bg-selected)' : 'var(--card-bg)'),
+                border: isOver ? '2px dashed var(--accent)' : `1.5px solid ${isSelected ? 'var(--accent)' : 'var(--card-border)'}`,
                 boxShadow: isSelected ? 'var(--card-selected-shadow)' : 'var(--card-shadow)',
                 padding: '14px 10px 12px',
+                zIndex: isOver ? 10 : 'auto'
             }}
             onMouseEnter={(e) => {
-                if (!isSelected) {
+                if (!isSelected && !isOver) {
                     e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)';
                     e.currentTarget.style.borderColor = 'var(--border)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                 }
             }}
             onMouseLeave={(e) => {
-                if (!isSelected) {
+                if (!isSelected && !isOver) {
                     e.currentTarget.style.boxShadow = 'var(--card-shadow)';
                     e.currentTarget.style.borderColor = 'var(--card-border)';
                     e.currentTarget.style.transform = 'translateY(0)';
