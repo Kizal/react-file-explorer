@@ -9,9 +9,7 @@ import GraphView from '../graph/GraphView';
 import FilePreview from '../preview/FilePreview';
 import { useFileExplorer } from '../../context/FileExplorerContext';
 
-// Custom sensor: only activate drag on primary (left) mouse button.
-// This prevents dnd-kit from intercepting right-click events at the
-// document level, which was blocking onContextMenu from firing.
+// Sensor to prevent dnd-kit from blocking context menu interactions
 class LeftClickOnlySensor extends PointerSensor {
   static activators = [
     {
@@ -85,14 +83,11 @@ const AppLayout = () => {
       onDragEnd={handleDragEnd}
     >
       <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
-        {/* Sidebar */}
         <aside className="hidden md:flex w-[260px] flex-col border-r border-border shrink-0">
           <Sidebar />
         </aside>
 
-        {/* Main Content */}
         <main className="flex-1 flex flex-col min-w-0 relative" style={{ backgroundColor: 'var(--bg-primary)' }}>
-          {/* Toolbar */}
           <header className="px-5 border-b border-border sticky top-0 z-10 shrink-0 h-14 flex items-center" style={{ backgroundColor: 'var(--bg-primary)' }}>
             <Toolbar
               showPreview={showPreview}
@@ -100,12 +95,10 @@ const AppLayout = () => {
             />
           </header>
 
-          {/* Breadcrumb */}
           <div className="px-5 py-1.5 border-b border-border-subtle shrink-0" style={{ backgroundColor: 'var(--bg-secondary)' }}>
             <Breadcrumb />
           </div>
 
-          {/* Content Area */}
           <div
             className="flex-1 overflow-y-auto p-5 relative"
             onClick={() => dispatch({ type: 'CLEAR_SELECTION' })}

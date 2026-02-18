@@ -5,16 +5,16 @@ import { formatFileSize } from '../utils/fileUtils';
 const FileExplorerContext = createContext();
 
 const initialState = {
-    files: [], // The complete file tree
-    currentFolderId: '1', // Default to 'Projects' (ID 1)
+    files: [],
+    currentFolderId: '1',
     selectedFileIds: [],
-    viewMode: 'grid', // 'grid' | 'list' | 'graph'
-    sortBy: 'name', // 'name' | 'size' | 'date'
-    sortOrder: 'asc', // 'asc' | 'desc'
+    viewMode: 'grid',
+    sortBy: 'name',
+    sortOrder: 'asc',
     searchQuery: '',
     isLoading: false,
     error: null,
-    expandedFolders: ['1'], // IDs of expanded folders in tree
+    expandedFolders: ['1'],
 };
 
 const reducer = (state, action) => {
@@ -64,7 +64,6 @@ export const FileExplorerProvider = ({ children }) => {
         }
     }, []);
 
-    // Initial load
     useEffect(() => {
         refreshData();
     }, [refreshData]);

@@ -18,13 +18,11 @@ const FileCard = ({ file, onContextMenu }) => {
         disabled: file.type !== 'folder'
     });
 
-    // Merge refs stably to avoid dnd-kit listener trashing
     const setNodeRef = useCallback((node) => {
         setDraggableRef(node);
         setDroppableRef(node);
     }, [setDraggableRef, setDroppableRef]);
 
-    // Separate listeners to have full control
     const { onPointerDown: dndPointerDown, ...otherListeners } = listeners || {};
 
     const handlePointerDown = (e) => {
@@ -96,7 +94,6 @@ const FileCard = ({ file, onContextMenu }) => {
                 }
             }}
         >
-            {/* Icon */}
             <div className="flex-1 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
                 {file.type === 'folder' ? (
                     <div className="text-[42px] drop-shadow-sm">📁</div>
@@ -105,7 +102,6 @@ const FileCard = ({ file, onContextMenu }) => {
                 )}
             </div>
 
-            {/* Label */}
             <div className="w-full mt-1.5">
                 <div className="text-[13px] font-semibold w-full truncate leading-tight"
                     style={{ color: isSelected ? 'var(--accent)' : 'var(--text-primary)' }}>
