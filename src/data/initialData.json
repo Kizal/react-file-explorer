@@ -1,0 +1,79 @@
+[
+  {
+    "id": "1",
+    "name": "Projects",
+    "type": "folder",
+    "children": [
+      {
+        "id": "2",
+        "name": "Designs",
+        "type": "folder",
+        "children": [
+          {
+            "id": "3",
+            "name": "LandingPage.png",
+            "type": "file",
+            "fileType": "image",
+            "url": "https://placehold.co/600x400/png?text=Landing+Page",
+            "size": 2450000,
+            "modified": 1709251200000
+          },
+          {
+            "id": "4",
+            "name": "Wireframe.pdf",
+            "type": "file",
+            "fileType": "pdf",
+            "url": "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf",
+            "size": 1500000,
+            "modified": 1709164800000
+          }
+        ],
+        "modified": 1709251200000
+      },
+      {
+        "id": "5",
+        "name": "Videos",
+        "type": "folder",
+        "children": [
+          {
+            "id": "6",
+            "name": "Demo.mp4",
+            "type": "file",
+            "fileType": "video",
+            "url": "https://www.w3schools.com/html/mov_bbb.mp4",
+            "size": 14500000,
+            "modified": 1709078400000
+          }
+        ],
+        "modified": 1709078400000
+      },
+      {
+        "id": "7",
+        "name": "README.txt",
+        "type": "file",
+        "fileType": "text",
+        "url": "https://raw.githubusercontent.com/facebook/react/main/README.md",
+        "size": 2500,
+        "modified": 1708992000000
+      }
+    ],
+    "modified": 1709251200000
+  },
+  {
+    "id": "8",
+    "name": "Archives",
+    "type": "folder",
+    "children": [
+      {
+        "id": "9",
+        "name": "OldProject.zip",
+        "type": "file",
+        "fileType": "other",
+        "url": "/files/OldProject.zip",
+        "size": 5600000,
+        "modified": 1708805600000
+      }
+    ],
+    "modified": 1708805600000
+  }
+]
